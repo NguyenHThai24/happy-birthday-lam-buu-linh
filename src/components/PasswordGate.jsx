@@ -6,7 +6,7 @@ const PasswordGate = ({ onSuccess }) => {
   const [isShaking, setIsShaking] = useState(false);
 
   const handleSubmit = () => {
-    if (code === "0111") {
+    if (code === "2708") {
       setError("");
       onSuccess();
     } else {
@@ -101,9 +101,9 @@ const PasswordGate = ({ onSuccess }) => {
         <h2 className="text-4xl font-bold mb-3 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 bg-clip-text text-transparent">
           Mở Khóa Bất Ngờ
         </h2>
-        <p className="text-gray-600 mb-8 text-base font-medium">
+        {/* <p className="text-gray-600 mb-8 text-base font-medium">
           Nhập ngày tháng sinh nhật của chị nhé 🎂
-        </p>
+        </p> */}
 
         {/* Input container */}
         <div className="relative mb-8">
