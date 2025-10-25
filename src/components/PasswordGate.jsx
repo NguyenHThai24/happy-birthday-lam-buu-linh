@@ -10,7 +10,7 @@ const PasswordGate = ({ onSuccess }) => {
       setError("");
       onSuccess();
     } else {
-      setError("Sai mật mã, chị nhập lại nha. Xem gợi ý bên dưới!");
+      setError("Sai mật mã, chị nhập lại nha.");
       setIsShaking(true);
       setTimeout(() => setIsShaking(false), 500);
       setCode("");
@@ -168,13 +168,13 @@ const PasswordGate = ({ onSuccess }) => {
         )}
 
         {/* Hint with heart icon */}
-        <div className="mt-8 flex items-center justify-center gap-2">
+        {/* <div className="mt-8 flex items-center justify-center gap-2">
           <span className="text-pink-400">💝</span>
           <p className="text-sm text-gray-500 italic font-medium">
             Gợi ý: 4 chữ số (DDMM)
           </p>
           <span className="text-pink-400">💝</span>
-        </div>
+        </div> */}
 
         {/* Bottom sparkles */}
         <div
