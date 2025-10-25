@@ -96,7 +96,7 @@ const WordAnimation = ({
   const getLetterStyle = () => {
     return {
       display: "inline-block",
-      fontSize: `clamp(24px, ${Math.min(screenWidth, screenHeight) * 0.06}px)`,
+      fontSize: `clamp(30px, ${Math.min(screenWidth, screenHeight) * 0.06}px)`,
       fontWeight: "700",
       color: "#FF1493",
       userSelect: "none",
