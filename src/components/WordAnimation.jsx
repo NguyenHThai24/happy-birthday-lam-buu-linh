@@ -96,24 +96,13 @@ const WordAnimation = ({
   const getLetterStyle = () => {
     return {
       display: "inline-block",
-      fontSize: `${Math.min(screenWidth, screenHeight) * 0.08}px`,
-      fontWeight: "900",
+      fontSize: `clamp(24px, ${Math.min(screenWidth, screenHeight) * 0.06}px)`,
+      fontWeight: "700",
       color: "#FF1493",
       userSelect: "none",
-      fontFamily: '"Playfair Display", serif',
-      margin: "0 4px",
-      textShadow: `
-        3px 3px 0 #FF69B4,
-        6px 6px 0 #FFB6C1,
-        9px 9px 0 #FFC0CB,
-        12px 12px 15px rgba(255,20,147,0.4),
-        -1px -1px 0 #C71585,
-        1px 1px 0 #C71585
-      `,
-      transform: "translateZ(0)",
-      position: "relative",
-      WebkitTextStroke: "2px #C71585",
-      paintOrder: "stroke fill",
+      fontFamily: "system-ui, -apple-system, sans-serif",
+      margin: "0 2px",
+      textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
     };
   };
 
@@ -121,7 +110,7 @@ const WordAnimation = ({
     return {
       display: "inline-block",
       whiteSpace: "nowrap",
-      margin: "8px 16px",
+      margin: "4px 8px",
     };
   };
 
