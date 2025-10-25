@@ -1,9 +1,10 @@
-import React, { useMemo } from "react";
-import { motion } from "framer-motion";
 import hbImage from "../assets/happy-birthday.png";
 
+import React, { useMemo } from "react";
+import { motion } from "framer-motion";
+
 const EmojiHeart = () => {
-  const total = 50;
+  const total = 30; // Giảm từ 50 xuống 30
 
   const getHeartPoints = (n) => {
     const points = [];
@@ -23,7 +24,7 @@ const EmojiHeart = () => {
 
   const emojis = useMemo(() => {
     const heartPoints = getHeartPoints(total);
-    const emojiList = ["🎂", "🎉", "🎈", "🎁", "✨", "💝", "🌸", "🦋"];
+    const emojiList = ["🎂", "🎉", "🎈", "🎁", "✨", "💝"];
     return heartPoints.map((p, i) => ({
       ...p,
       emoji: emojiList[Math.floor(Math.random() * emojiList.length)],
@@ -32,11 +33,11 @@ const EmojiHeart = () => {
     }));
   }, [total]);
 
-  // Confetti particles
+  // Giảm confetti từ 30 xuống 15
   const confetti = useMemo(() => {
-    return [...Array(30)].map((_, i) => ({
+    return [...Array(15)].map((_, i) => ({
       id: i,
-      emoji: ["🎊", "🎉", "⭐", "✨", "💫"][Math.floor(Math.random() * 5)],
+      emoji: ["🎊", "🎉", "⭐"][Math.floor(Math.random() * 3)],
       x: Math.random() * 100,
       delay: Math.random() * 3,
     }));
@@ -44,29 +45,14 @@ const EmojiHeart = () => {
 
   return (
     <div className="absolute inset-0 bg-gradient-to-br from-pink-400 via-rose-300 to-purple-400 overflow-hidden">
-      {/* Animated background blobs */}
+      {/* Simplified background blobs - chỉ 1 blob */}
       <motion.div
         className="absolute top-0 left-0 w-96 h-96 bg-white/20 rounded-full blur-3xl"
         animate={{
-          x: [0, 100, 0],
-          y: [0, 50, 0],
           scale: [1, 1.2, 1],
         }}
         transition={{
           duration: 8,
-          repeat: Infinity,
-          ease: "easeInOut",
-        }}
-      />
-      <motion.div
-        className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-purple-300/30 rounded-full blur-3xl"
-        animate={{
-          x: [0, -80, 0],
-          y: [0, -60, 0],
-          scale: [1, 1.3, 1],
-        }}
-        transition={{
-          duration: 10,
           repeat: Infinity,
           ease: "easeInOut",
         }}
@@ -76,15 +62,14 @@ const EmojiHeart = () => {
       {confetti.map((item) => (
         <motion.div
           key={item.id}
-          className="absolute text-3xl"
-          style={{ left: `${item.x}%`, top: -50 }}
+          className="absolute text-2xl"
+          style={{ left: `${item.x}%`, top: -50, willChange: "transform" }}
           animate={{
             y: ["0vh", "110vh"],
             rotate: [0, 360],
-            x: [0, Math.random() * 100 - 50],
           }}
           transition={{
-            duration: 4 + Math.random() * 3,
+            duration: 5 + Math.random() * 2,
             repeat: Infinity,
             delay: item.delay,
             ease: "linear",
@@ -96,12 +81,12 @@ const EmojiHeart = () => {
 
       {/* Heart shape container */}
       <div className="absolute inset-0 flex items-center justify-center">
-        {/* Glow effect behind heart */}
+        {/* Simplified glow effect */}
         <motion.div
-          className="absolute w-[600px] h-[600px] bg-pink-500/30 rounded-full blur-[100px]"
+          className="absolute w-[500px] h-[500px] bg-pink-500/30 rounded-full blur-[80px]"
           animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.6, 0.3],
+            scale: [1, 1.15, 1],
+            opacity: [0.3, 0.5, 0.3],
           }}
           transition={{
             duration: 3,
@@ -115,7 +100,7 @@ const EmojiHeart = () => {
           {emojis.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ x: 0, y: 0, opacity: 0, scale: 0, rotate: 0 }}
+              initial={{ x: 0, y: 0, opacity: 0, scale: 0 }}
               animate={{
                 x: item.x,
                 y: item.y,
@@ -124,73 +109,46 @@ const EmojiHeart = () => {
                 rotate: item.rotation,
               }}
               transition={{
-                duration: 2.5,
+                duration: 2,
                 delay: item.delay,
                 ease: "easeOut",
               }}
               className="absolute text-3xl"
               style={{
                 filter: "drop-shadow(0 4px 8px rgba(0,0,0,0.2))",
+                willChange: "transform",
               }}
             >
-              <motion.span
-                animate={{
-                  scale: [1, 1.15, 1],
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  delay: item.delay,
-                  ease: "easeInOut",
-                }}
-              >
-                {item.emoji}
-              </motion.span>
+              {item.emoji}
             </motion.div>
           ))}
         </div>
       </div>
 
-      {/* Center decorative elements */}
+      {/* Center heart - bỏ animation pulsing */}
       <motion.div
-        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-8xl"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        transition={{ delay: 2.5, duration: 1, type: "spring" }}
+        transition={{ delay: 2, duration: 1 }}
       >
-        <motion.div
-          className="text-8xl"
-          animate={{
-            rotate: [0, 10, -10, 0],
-            scale: [1, 1.1, 1],
-          }}
-          transition={{
-            duration: 2,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          💖
-        </motion.div>
+        💖
       </motion.div>
 
-      {/* Happy Birthday Image with animation */}
+      {/* Happy Birthday Image with simplified animation */}
       <motion.div
         className="absolute bottom-10 left-1/2 transform -translate-x-1/2"
-        initial={{ y: 100, opacity: 0, scale: 0.8 }}
-        animate={{ y: 0, opacity: 1, scale: 1 }}
+        initial={{ y: 100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
         transition={{
-          delay: 3,
+          delay: 2.5,
           duration: 1,
-          type: "spring",
-          stiffness: 200,
-          damping: 15,
+          ease: "easeOut",
         }}
       >
         <motion.div
           animate={{
-            y: [0, -15, 0],
-            rotate: [0, 2, -2, 0],
+            y: [0, -10, 0],
           }}
           transition={{
             duration: 3,
@@ -198,35 +156,35 @@ const EmojiHeart = () => {
             ease: "easeInOut",
           }}
         >
-          <img
-            src={hbImage}
-            alt="Happy Birthday"
-            className="w-[350px] md:w-[400px] drop-shadow-2xl"
-            style={{
-              filter: "drop-shadow(0 10px 30px rgba(0,0,0,0.3))",
-            }}
-          />
+          {hbImage ? (
+            <img
+              src={hbImage}
+              alt="Happy Birthday"
+              className="w-[300px] md:w-[350px] drop-shadow-2xl"
+            />
+          ) : (
+            <div className="text-6xl font-bold text-white drop-shadow-2xl"></div>
+          )}
         </motion.div>
 
-        {/* Sparkles around image */}
-        {[...Array(6)].map((_, i) => (
+        {/* Giảm sparkles từ 6 xuống 3 */}
+        {[...Array(3)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute text-2xl"
             style={{
-              left: `${20 + i * 15}%`,
+              left: `${30 + i * 20}%`,
               top: i % 2 === 0 ? "-20px" : "auto",
               bottom: i % 2 === 1 ? "-20px" : "auto",
             }}
             animate={{
               scale: [0, 1, 0],
-              rotate: [0, 180, 360],
               opacity: [0, 1, 0],
             }}
             transition={{
               duration: 2,
               repeat: Infinity,
-              delay: i * 0.3 + 3,
+              delay: i * 0.5 + 2.5,
               ease: "easeInOut",
             }}
           >
@@ -235,26 +193,26 @@ const EmojiHeart = () => {
         ))}
       </motion.div>
 
-      {/* Floating bubbles */}
-      {[...Array(15)].map((_, i) => (
+      {/* Giảm floating bubbles từ 15 xuống 8 */}
+      {[...Array(8)].map((_, i) => (
         <motion.div
           key={`bubble-${i}`}
-          className="absolute w-4 h-4 bg-white/40 rounded-full"
+          className="absolute w-3 h-3 bg-white/30 rounded-full"
           style={{
             left: `${Math.random() * 100}%`,
             bottom: -20,
+            willChange: "transform",
           }}
           animate={{
             y: [0, -window.innerHeight - 100],
-            x: [0, Math.random() * 100 - 50],
             scale: [0, 1, 0.5],
-            opacity: [0, 0.8, 0],
+            opacity: [0, 0.6, 0],
           }}
           transition={{
-            duration: 4 + Math.random() * 3,
+            duration: 5 + Math.random() * 2,
             repeat: Infinity,
-            delay: i * 0.5,
-            ease: "easeOut",
+            delay: i * 0.8,
+            ease: "linear",
           }}
         />
       ))}

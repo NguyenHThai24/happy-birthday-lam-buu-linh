@@ -15,7 +15,7 @@ function App() {
     if (stage === "fallingLetters") {
       const timer = setTimeout(() => {
         setStage("gallery");
-      }, 100000);
+      }, 93000);
       return () => clearTimeout(timer);
     }
   }, [stage]);
