@@ -96,13 +96,17 @@ const WordAnimation = ({
   const getLetterStyle = () => {
     return {
       display: "inline-block",
-      fontSize: `clamp(30px, ${Math.min(screenWidth, screenHeight) * 0.06}px)`,
-      fontWeight: "700",
+      // fontSize: `clamp(20px, ${
+      //   Math.min(screenWidth, screenHeight) * 0.1
+      // }px, 60px)`,
+      fontSize: "1.5rem",
+      fontWeight: "800",
       color: "#FF1493",
       userSelect: "none",
-      fontFamily: "system-ui, -apple-system, sans-serif",
-      margin: "0 2px",
-      textShadow: "2px 2px 4px rgba(0,0,0,0.1)",
+      fontFamily: "'DM Sans', sans-serif",
+      margin: "0 3px",
+      textShadow: "3px 3px 6px rgba(0,0,0,0.15)",
+      letterSpacing: "0.5px",
     };
   };
 
