@@ -251,7 +251,7 @@ const GalleryLayout = ({ onConfession }) => {
           whileTap={{ scale: 0.95 }}
           onClick={onConfession}
         >
-          💌 Gửi lá thư
+          💌 Lá thư
         </motion.button>
       )}
     </div>
