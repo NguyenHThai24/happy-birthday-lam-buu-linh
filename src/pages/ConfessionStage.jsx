@@ -1,138 +1,132 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ConfessionStage = ({ onComplete }) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [stage, setStage] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [showLetter, setShowLetter] = useState(false);
+  const [currentLines, setCurrentLines] = useState([]);
+  const [currentLineIndex, setCurrentLineIndex] = useState(0);
+  const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const [windowSize, setWindowSize] = useState({
+    width: typeof window !== "undefined" ? window.innerWidth : 1200,
+    height: typeof window !== "undefined" ? window.innerHeight : 800,
+  });
+  const letterContainerRef = useRef(null);
 
-  // Memoize confession steps to prevent unnecessary re-renders
-  const confessionSteps = useMemo(
+  // Memoize confession content
+  const confessionContent = useMemo(
     () => [
-      { text: "...", duration: 4000 },
-      { text: "Em có vài điều muốn chia sẻ với chị...", duration: 3500 },
-      { text: "Từ ngày đầu tiên nói chuyện, 27/08", duration: 4000 },
-      { text: "Em đã nhận ra chị là một người rất đặc biệt", duration: 4000 },
-      { text: "Mỗi lần được trò chuyện cùng chị", duration: 3500 },
-      { text: "Hay những lần chơi cầu lông cùng nhau", duration: 4000 },
-      { text: "Đều mang lại cho em những cảm xúc rất đẹp", duration: 4000 },
-      { text: "Chị có một năng lượng tích cực kỳ lạ", duration: 3500 },
-      { text: "Cách chị cười, cách chị nói chuyện", duration: 3500 },
-      {
-        text: "Luôn khiến mọi thứ xung quanh trở nên tươi sáng hơn",
-        duration: 4000,
-      },
-      { text: "Nhờ có chị, em đã học được nhiều điều", duration: 4000 },
-      {
-        text: "Về sự trưởng thành, về cách suy nghĩ chín chắn",
-        duration: 4000,
-      },
-      { text: "Và em thực sự trân trọng điều đó", duration: 3500 },
-      {
-        text: "Em biết cuộc sống không phải lúc nào cũng màu hồng",
-        duration: 4000,
-      },
-      { text: "Sẽ có những ngày chị cảm thấy mệt mỏi", duration: 3500 },
-      {
-        text: "Những lúc chị nghi ngờ về các lựa chọn của mình",
-        duration: 4000,
-      },
-      { text: "Nhưng chị hãy nhớ một điều...", duration: 3500 },
-      { text: "Dù chị có điều gì sai lầm hay vấp ngã", duration: 4000 },
-      { text: "Dù chị có chọn ai hay con đường nào", duration: 4000 },
-      { text: "Thì em vẫn sẽ ở đây, chờ đợi chị", duration: 4000 },
-      { text: "Không phải như một áp lực", duration: 3500 },
-      {
-        text: "Mà như một điểm tựa bình yên chị có thể tìm về",
-        duration: 4000,
-      },
-      { text: "Điều em muốn nói là...", duration: 3500 },
-      { text: "Dù tương lai thế nào, dù chị lựa chọn điều gì", duration: 4000 },
-      { text: "Thì điều quan trọng nhất với em", duration: 4000 },
-      { text: "Là được thấy chị luôn hạnh phúc", duration: 3500 },
-      { text: "Được thấy nụ cười tỏa nắng của chị", duration: 4000 },
-      { text: "Được thấy chị sống thật vui vẻ và nhẹ nhàng", duration: 4000 },
-      { text: "Với em, chỉ cần được làm một người bạn", duration: 3500 },
-      { text: "Được đồng hành và chia sẻ cùng chị", duration: 4000 },
-      { text: "Cũng đã là một điều quý giá rồi", duration: 4000 },
-      { text: "Em chúc chị luôn giữ được sự lạc quan ấy", duration: 3500 },
-      { text: "Luôn tìm thấy niềm vui trong cuộc sống", duration: 4000 },
-      { text: "Và hãy cứ là chính mình, như chị vẫn luôn thế", duration: 5000 },
-      { text: "Cảm ơn chị vì tất cả 🌟", duration: 5000 },
+      "Gửi chị...",
+      "Có vài điều em muốn gửi đến chị hôm nay.",
+      "Từ ngày 27/08 - ngày đầu tiên chúng ta trò chuyện,",
+      "em đã nhận ra chị là một người rất đặc biệt.",
+      "Mỗi lần được nói chuyện cùng chị,",
+      "mỗi lần chơi cầu lông cùng nhau,",
+      "đều mang đến cho em những cảm xúc thật đẹp.",
+      "",
+      "Chị có một năng lượng tích cực đến lạ thường.",
+      "Nụ cười, giọng nói của chị",
+      "luôn khiến mọi thứ xung quanh bừng sáng.",
+      "",
+      "Nhờ có chị, em học được nhiều điều",
+      "về sự trưởng thành, về cách suy nghĩ chín chắn.",
+      "Em trân trọng điều đó vô cùng.",
+      "",
+      "Em biết cuộc sống không phải lúc nào",
+      "cũng êm đềm và dễ dàng.",
+      "Sẽ có những ngày chị mệt mỏi,",
+      "những lúc chị nghi ngờ về lựa chọn của mình.",
+      "",
+      "Nhưng xin chị hãy nhớ rằng...",
+      "Dù chị có thế nào, dù chị chọn đi đâu,",
+      "thì em vẫn sẽ ở đây, chờ đợi chị.",
+      "",
+      "Không phải như gánh nặng,",
+      "mà như bến đỗ bình yên",
+      "mà chị có thể trở về.",
+      "",
+      "Điều em mong muốn nhất",
+      "là được thấy chị luôn hạnh phúc.",
+      "Được thấy nụ cười rạng rỡ của chị,",
+      "được thấy chị sống thật vui vẻ.",
+      "",
+      "Chỉ cần được làm một người bạn",
+      "đồng hành cùng chị,",
+      "với em đó đã là điều quý giá.",
+      "",
+      "Em chúc chị luôn giữ được",
+      "sự lạc quan và nhiệt huyết ấy.",
+      "Hãy cứ là chính mình,",
+      "như chị vẫn luôn tỏa sáng.",
+      "",
+      "Cảm ơn chị vì tất cả...",
+      "💝",
     ],
     []
   );
 
-  // Optimized background elements with pre-calculated values
-  const backgroundHearts = useMemo(
-    () =>
-      Array.from({ length: 15 }, (_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        fontSize: 20 + Math.random() * 30,
-        duration: 45 + Math.random() * 30,
-        delay: Math.random() * 12,
-      })),
-    []
-  );
+  // Tính toán số dòng hiển thị dựa trên kích thước màn hình
+  const MAX_VISIBLE_LINES = useMemo(() => {
+    if (windowSize.height < 600) return 6;
+    if (windowSize.height < 700) return 8;
+    if (windowSize.height < 800) return 10;
+    if (windowSize.height < 900) return 12;
+    return 14;
+  }, [windowSize.height]);
 
-  const backgroundBubbles = useMemo(
-    () =>
-      Array.from({ length: 12 }, (_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        size: 40 + Math.random() * 80,
-        duration: 25 + Math.random() * 20,
-        delay: Math.random() * 8,
-      })),
-    []
-  );
+  // Tính toán chiều cao lá thư dựa trên kích thước màn hình
+  const letterHeight = useMemo(() => {
+    if (windowSize.height < 600) return 400;
+    if (windowSize.height < 700) return 450;
+    if (windowSize.height < 800) return 500;
+    if (windowSize.height < 900) return 550;
+    return 600;
+  }, [windowSize.height]);
 
-  const cardHearts = useMemo(
+  // Tính toán kích thước chữ dựa trên kích thước màn hình
+  const fontSize = useMemo(() => {
+    if (windowSize.width < 640) return "text-base"; // mobile
+    if (windowSize.width < 768) return "text-lg"; // tablet
+    return "text-xl"; // desktop
+  }, [windowSize.width]);
+
+  // Tính toán padding dựa trên kích thước màn hình
+  const padding = useMemo(() => {
+    if (windowSize.width < 640) return "p-6";
+    if (windowSize.width < 768) return "p-8";
+    return "p-12";
+  }, [windowSize.width]);
+
+  // Background elements
+  const backgroundInk = useMemo(
     () =>
       Array.from({ length: 8 }, (_, i) => ({
         id: i,
-        left: Math.cos((i * Math.PI * 2) / 8) * 250,
-        top: Math.sin((i * Math.PI * 2) / 8) * 200,
-        duration: 8 + i * 0.8,
-      })),
-    []
-  );
-
-  const innerHearts = useMemo(
-    () =>
-      Array.from({ length: 6 }, (_, i) => ({
-        id: i,
         left: Math.random() * 100,
         top: Math.random() * 100,
-        delay: i * 1.2,
+        size: 30 + Math.random() * 50,
+        rotation: Math.random() * 360,
+        duration: 40 + Math.random() * 30,
+        delay: Math.random() * 15,
       })),
     []
   );
 
-  // Heart explosion elements
-  const heartExplosionElements = useMemo(
-    () =>
-      Array.from({ length: 35 }, (_, i) => ({
-        id: i,
-        x: (Math.random() - 0.5) * 600,
-        y: (Math.random() - 0.5) * 600,
-        rotate: Math.random() * 360,
-        type: ["💕", "💖", "💗", "💝", "✨"][Math.floor(Math.random() * 5)],
-      })),
-    []
-  );
+  // Theo dõi kích thước màn hình
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    };
 
-  // Memoized progress calculation
-  const totalSteps = confessionSteps.length;
-  const progressPercent = useMemo(
-    () => ((stage + 1) / totalSteps) * 100,
-    [stage, totalSteps]
-  );
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Password handlers
   const handlePasswordSubmit = (e) => {
@@ -140,6 +134,7 @@ const ConfessionStage = ({ onComplete }) => {
     if (password === "2708") {
       setIsUnlocked(true);
       setError("");
+      setTimeout(() => setShowLetter(true), 1000);
     } else {
       setError("Mật khẩu không đúng 💔");
       setPassword("");
@@ -158,97 +153,120 @@ const ConfessionStage = ({ onComplete }) => {
     setError("");
   };
 
-  // Optimized useEffect with cleanup
+  // Typewriter effect với từng chữ
   useEffect(() => {
-    if (!isUnlocked) return;
+    if (!showLetter || !isTyping) return;
 
-    if (stage < confessionSteps.length) {
-      const currentStep = confessionSteps[stage];
-      let progressInterval;
+    if (currentLineIndex < confessionContent.length) {
+      const currentLine = confessionContent[currentLineIndex];
 
-      const timer = setTimeout(() => {
-        setStage(stage + 1);
-      }, currentStep.duration);
+      if (currentCharIndex < currentLine.length) {
+        const timer = setTimeout(() => {
+          setCurrentCharIndex((prev) => prev + 1);
+        }, 80);
 
-      setProgress(0);
-      progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          const newProgress = prev + 100 / (currentStep.duration / 100);
-          return newProgress >= 100 ? 100 : newProgress;
-        });
-      }, currentStep.duration / 100);
+        return () => clearTimeout(timer);
+      } else {
+        const timer = setTimeout(() => {
+          setCurrentLines((prev) => {
+            const newLine = {
+              text: currentLine,
+              id: currentLineIndex,
+              isNew: true,
+            };
 
-      return () => {
-        clearTimeout(timer);
-        clearInterval(progressInterval);
-      };
-    } else if (stage === confessionSteps.length) {
-      const timer = setTimeout(() => {
-        onComplete?.("completed");
-      }, 15000);
-      return () => clearTimeout(timer);
+            const newLines = [...prev, newLine];
+
+            if (newLines.length > MAX_VISIBLE_LINES) {
+              return newLines
+                .slice(1)
+                .map((line) => ({ ...line, isNew: false }));
+            }
+            return newLines;
+          });
+
+          setCurrentLineIndex((prev) => prev + 1);
+          setCurrentCharIndex(0);
+        }, 300);
+
+        return () => clearTimeout(timer);
+      }
+    } else {
+      setIsTyping(false);
     }
-  }, [stage, confessionSteps, onComplete, isUnlocked]);
+  }, [
+    showLetter,
+    isTyping,
+    currentLineIndex,
+    currentCharIndex,
+    confessionContent,
+    MAX_VISIBLE_LINES,
+  ]);
 
-  // Password screen
+  // Password screen (giữ nguyên)
   if (!isUnlocked) {
     return (
-      <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-rose-100 to-pink-200 overflow-hidden flex items-center justify-center">
+      <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-rose-100 to-pink-200 overflow-hidden flex items-center justify-center p-4">
         {/* Background hearts */}
         <div className="absolute inset-0">
-          {backgroundHearts.slice(0, 8).map((heart) => (
+          {backgroundInk.slice(0, 6).map((ink) => (
             <motion.div
-              key={`heart-${heart.id}`}
-              className="absolute text-pink-400/30 pointer-events-none"
+              key={`ink-${ink.id}`}
+              className="absolute text-pink-400/20 pointer-events-none"
               style={{
-                left: `${heart.left}%`,
-                top: `${heart.top}%`,
-                fontSize: `${heart.fontSize}px`,
+                left: `${ink.left}%`,
+                top: `${ink.top}%`,
+                fontSize: `${ink.size}px`,
+                transform: `rotate(${ink.rotation}deg)`,
               }}
               animate={{
-                y: [0, -80, 0],
-                opacity: [0.1, 0.4, 0.1],
+                y: [0, -30, 0],
+                opacity: [0.1, 0.25, 0.1],
+                scale: [1, 1.05, 1],
               }}
               transition={{
-                duration: heart.duration,
+                duration: ink.duration,
                 repeat: Infinity,
-                delay: heart.delay,
+                delay: ink.delay,
                 ease: "easeInOut",
               }}
             >
-              💕
+              ✎
             </motion.div>
           ))}
         </div>
 
         <motion.div
-          className="relative z-10 bg-white/95 backdrop-blur-xl rounded-3xl border-2 border-pink-200 p-8 md:p-12 shadow-2xl max-w-md w-full mx-4"
+          className="relative z-10 bg-white/95 backdrop-blur-xl rounded-3xl border-2 border-pink-200 p-4 md:p-8 lg:p-12 shadow-2xl max-w-md w-full mx-4"
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
           <motion.div
-            className="text-6xl text-center mb-6"
+            className="text-4xl md:text-6xl text-center mb-4 md:mb-6"
             animate={{ scale: [1, 1.1, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
-            🔐
+            ✉️
           </motion.div>
 
-          <h2 className="text-2xl md:text-3xl font-light text-transparent bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-center mb-2">
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-light text-transparent bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-center mb-2">
             Nhập mật khẩu
           </h2>
-          <p className="text-pink-500 text-center mb-8 text-sm">
-            Để xem lời nhắn đặc biệt 💖
+          <p className="text-pink-500 text-center mb-6 md:mb-8 text-xs md:text-sm">
+            Để mở lá thư đặc biệt 💌
           </p>
 
-          <form onSubmit={handlePasswordSubmit} className="space-y-6">
+          <form
+            onSubmit={handlePasswordSubmit}
+            className="space-y-4 md:space-y-6"
+          >
             {/* Password display */}
-            <div className="flex justify-center gap-3 mb-8">
+            <div className="flex justify-center gap-2 md:gap-3 mb-6 md:mb-8">
               {[0, 1, 2, 3].map((i) => (
                 <motion.div
                   key={i}
-                  className="w-14 h-14 rounded-2xl border-2 border-pink-300 bg-pink-50 flex items-center justify-center text-2xl font-medium text-pink-600"
+                  className="w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl border-2 border-pink-300 bg-pink-50 flex items-center justify-center text-lg md:text-2xl font-medium text-pink-600"
                   animate={password.length === i ? { scale: [1, 1.1, 1] } : {}}
                   transition={{ duration: 0.3 }}
                 >
@@ -261,7 +279,7 @@ const ConfessionStage = ({ onComplete }) => {
             <AnimatePresence>
               {error && (
                 <motion.p
-                  className="text-red-500 text-center text-sm"
+                  className="text-red-500 text-center text-xs md:text-sm"
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
@@ -272,13 +290,13 @@ const ConfessionStage = ({ onComplete }) => {
             </AnimatePresence>
 
             {/* Number pad */}
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2 md:gap-3">
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                 <motion.button
                   key={num}
                   type="button"
                   onClick={() => handleNumberClick(num.toString())}
-                  className="h-14 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 hover:from-pink-200 hover:to-rose-200 text-pink-700 font-medium text-xl transition-all shadow-sm"
+                  className="h-12 md:h-14 rounded-lg md:rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 hover:from-pink-200 hover:to-rose-200 text-pink-700 font-medium text-base md:text-xl transition-all shadow-sm"
                   whileTap={{ scale: 0.95 }}
                 >
                   {num}
@@ -287,7 +305,7 @@ const ConfessionStage = ({ onComplete }) => {
               <motion.button
                 type="button"
                 onClick={handleDelete}
-                className="h-14 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 font-medium text-sm transition-all shadow-sm"
+                className="h-12 md:h-14 rounded-lg md:rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 font-medium text-xs md:text-sm transition-all shadow-sm"
                 whileTap={{ scale: 0.95 }}
               >
                 Xóa
@@ -295,7 +313,7 @@ const ConfessionStage = ({ onComplete }) => {
               <motion.button
                 type="button"
                 onClick={() => handleNumberClick("0")}
-                className="h-14 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 hover:from-pink-200 hover:to-rose-200 text-pink-700 font-medium text-xl transition-all shadow-sm"
+                className="h-12 md:h-14 rounded-lg md:rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 hover:from-pink-200 hover:to-rose-200 text-pink-700 font-medium text-base md:text-xl transition-all shadow-sm"
                 whileTap={{ scale: 0.95 }}
               >
                 0
@@ -303,15 +321,15 @@ const ConfessionStage = ({ onComplete }) => {
               <motion.button
                 type="submit"
                 disabled={password.length !== 4}
-                className="h-14 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium text-sm transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                className="h-12 md:h-14 rounded-lg md:rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium text-xs md:text-sm transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 whileTap={{ scale: password.length === 4 ? 0.95 : 1 }}
               >
-                OK
+                Mở thư
               </motion.button>
             </div>
           </form>
 
-          <p className="text-pink-400 text-center mt-6 text-xs">
+          <p className="text-pink-400 text-center mt-4 md:mt-6 text-xs">
             Gợi ý: Ngày đầu tiên chúng ta nói chuyện 💕
           </p>
         </motion.div>
@@ -319,226 +337,213 @@ const ConfessionStage = ({ onComplete }) => {
     );
   }
 
-  // Main confession content
+  // Letter content với responsive design
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-rose-100 to-pink-200 overflow-hidden">
-      {/* Optimized Floating hearts background */}
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-blue-100 overflow-hidden flex items-center justify-center p-2 sm:p-4">
+      {/* Background ink splashes */}
       <div className="absolute inset-0">
-        {backgroundHearts.map((heart) => (
+        {backgroundInk.map((ink) => (
           <motion.div
-            key={`heart-${heart.id}`}
-            className="absolute text-pink-400/30 pointer-events-none"
+            key={`ink-${ink.id}`}
+            className="absolute text-blue-300/15 pointer-events-none"
             style={{
-              left: `${heart.left}%`,
-              top: `${heart.top}%`,
-              fontSize: `${heart.fontSize}px`,
+              left: `${ink.left}%`,
+              top: `${ink.top}%`,
+              fontSize: `${ink.size}px`,
+              transform: `rotate(${ink.rotation}deg)`,
             }}
             animate={{
-              y: [0, -80, 0],
-              x: [0, Math.random() * 20 - 10, 0],
-              rotate: [0, 180, 360],
-              opacity: [0.1, 0.4, 0.1],
+              y: [0, -20, 0],
+              opacity: [0.05, 0.15, 0.05],
+              rotate: [ink.rotation, ink.rotation + 10, ink.rotation],
             }}
             transition={{
-              duration: heart.duration,
+              duration: ink.duration,
               repeat: Infinity,
-              delay: heart.delay,
+              delay: ink.delay,
               ease: "easeInOut",
             }}
           >
-            💕
+            ✑
           </motion.div>
         ))}
       </div>
 
-      {/* Optimized Floating bubbles */}
-      <div className="absolute inset-0">
-        {backgroundBubbles.map((bubble) => (
+      <AnimatePresence>
+        {showLetter && (
           <motion.div
-            key={`bubble-${bubble.id}`}
-            className="absolute rounded-full bg-gradient-to-br from-pink-300/20 to-rose-300/20 backdrop-blur-sm pointer-events-none"
-            style={{
-              left: `${bubble.left}%`,
-              top: `${bubble.top}%`,
-              width: `${bubble.size}px`,
-              height: `${bubble.size}px`,
-            }}
-            animate={{
-              y: [0, -120, 0],
-              x: [0, Math.random() * 40 - 20, 0],
-              scale: [1, 1.05, 1],
-              opacity: [0.2, 0.4, 0.2],
-            }}
-            transition={{
-              duration: bubble.duration,
-              repeat: Infinity,
-              delay: bubble.delay,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-
-      <AnimatePresence mode="wait">
-        {/* Main confession cards */}
-        {stage < confessionSteps.length && (
-          <motion.div
-            key={`stage-${stage}`}
-            className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            {/* Optimized Animated hearts around card */}
-            {cardHearts.map((heart) => (
-              <motion.div
-                key={`card-heart-${heart.id}`}
-                className="absolute text-4xl z-0 pointer-events-none"
-                style={{
-                  left: `calc(50% + ${heart.left}px)`,
-                  top: `calc(50% + ${heart.top}px)`,
-                }}
-                animate={{
-                  scale: [1, 1.2, 1],
-                  rotate: [0, 360],
-                  opacity: [0.3, 0.6, 0.3],
-                }}
-                transition={{
-                  duration: heart.duration,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                {["💖", "💝", "💗", "💕"][heart.id % 4]}
-              </motion.div>
-            ))}
-
-            {/* Main card */}
-            <motion.div
-              className="max-w-4xl w-full relative"
-              initial={{ scale: 0.9, y: 20 }}
-              animate={{ scale: 1, y: 0 }}
-              transition={{ duration: 0.8, type: "spring" }}
-            >
-              <div className="relative bg-white/90 backdrop-blur-xl rounded-3xl border-2 border-pink-200 shadow-2xl overflow-hidden">
-                {/* Pink gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-br from-pink-100/50 via-rose-100/30 to-transparent" />
-
-                {/* Optimized Floating small hearts inside card */}
-                <div className="absolute inset-0 overflow-hidden">
-                  {innerHearts.map((heart) => (
-                    <motion.div
-                      key={`inner-heart-${heart.id}`}
-                      className="absolute text-pink-300/25 text-2xl pointer-events-none"
-                      style={{
-                        left: `${heart.left}%`,
-                        top: `${heart.top}%`,
-                      }}
-                      animate={{
-                        y: [0, -25, 0],
-                        opacity: [0.15, 0.4, 0.15],
-                      }}
-                      transition={{
-                        duration: 8,
-                        repeat: Infinity,
-                        delay: heart.delay,
-                      }}
-                    >
-                      💕
-                    </motion.div>
-                  ))}
-                </div>
-
-                {/* Content */}
-                <div className="relative p-8 md:p-16 min-h-[400px] flex items-center justify-center">
-                  <motion.h1
-                    className="text-3xl md:text-5xl lg:text-6xl font-light text-transparent bg-gradient-to-r from-pink-600 via-rose-600 to-pink-700 bg-clip-text text-center leading-relaxed"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.8 }}
-                  >
-                    {confessionSteps[stage].text}
-                  </motion.h1>
-                </div>
-
-                {/* Bottom progress bar */}
-                <div className="absolute bottom-0 left-0 right-0 h-1 bg-pink-100">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-pink-400 to-rose-400"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
-                    transition={{ duration: 0.1, ease: "linear" }}
-                  />
-                </div>
-              </div>
-
-              {/* Hint text */}
-              <motion.p
-                className="text-pink-600 text-center mt-6 text-sm flex items-center justify-center gap-2"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-              >
-                <span className="animate-pulse">💗</span>
-                Đang đọc...
-                <span className="animate-pulse">💗</span>
-              </motion.p>
-            </motion.div>
-          </motion.div>
-        )}
-
-        {/* Final response */}
-        {stage === confessionSteps.length && (
-          <motion.div
-            key="final"
-            className="relative z-10 min-h-screen flex flex-col items-center justify-center px-4"
+            className="relative z-10 w-full max-w-4xl mx-2 sm:mx-4"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1 }}
+            transition={{ duration: 1.2, type: "spring" }}
           >
-            {/* Heart explosion */}
-            {heartExplosionElements.map((heart) => (
-              <motion.div
-                key={heart.id}
-                className="absolute text-2xl pointer-events-none"
-                style={{ left: "50%", top: "50%" }}
-                initial={{ scale: 0, x: 0, y: 0 }}
-                animate={{
-                  scale: [0, 1, 0.8],
-                  x: heart.x,
-                  y: heart.y,
-                  rotate: heart.rotate,
-                  opacity: [0, 1, 0],
-                }}
-                transition={{ duration: 2.5, ease: "easeOut" }}
-              >
-                {heart.type}
-              </motion.div>
-            ))}
-
-            <motion.div
-              className="bg-white/95 backdrop-blur-xl rounded-3xl border-2 border-pink-200 p-10 md:p-16 shadow-2xl max-w-2xl text-center relative z-10"
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.5, type: "spring" }}
+            {/* Paper với chiều cao responsive */}
+            <div
+              className="relative bg-[#fefefe] border-l-4 border-blue-300 shadow-2xl overflow-hidden"
+              style={{ height: `${letterHeight}px` }}
             >
-              <motion.div
-                className="text-7xl mb-6"
-                animate={{ rotate: [0, 360], scale: [1, 1.2, 1] }}
-                transition={{ duration: 2.5 }}
+              {/* Hiệu ứng giấy viết thư */}
+              <div className="absolute inset-0 bg-gradient-to-b from-blue-50/30 to-transparent" />
+              <div className="absolute left-8 sm:left-12 md:left-16 top-0 bottom-0 w-0.5 bg-blue-200/30" />
+
+              {/* Các dòng kẻ ngang */}
+              <div className="absolute inset-0 opacity-20">
+                {Array.from(
+                  { length: Math.floor(letterHeight / 32) },
+                  (_, i) => (
+                    <div
+                      key={i}
+                      className="w-full h-6 sm:h-8 border-b border-blue-100"
+                      style={{ marginTop: `${i * 32}px` }}
+                    />
+                  )
+                )}
+              </div>
+
+              {/* Nội dung thư với container responsive */}
+              <div
+                ref={letterContainerRef}
+                className={`relative h-full font-handwriting overflow-hidden ${padding}`}
               >
-                💝
+                {/* Tiêu đề - chỉ hiển thị khi chưa có nhiều dòng */}
+                {currentLines.length < 5 && (
+                  <motion.div
+                    className="text-center mb-4 sm:mb-6 md:mb-8"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-blue-900 mb-2 tracking-wide">
+                      Thư gửi chị
+                    </h1>
+                    <div className="w-20 sm:w-24 md:w-32 h-0.5 bg-blue-400 mx-auto opacity-60" />
+                  </motion.div>
+                )}
+
+                {/* Nội dung chính với hiệu ứng gõ từng chữ */}
+                <div
+                  className={`space-y-1 text-blue-900 leading-7 sm:leading-8 ${fontSize}`}
+                >
+                  <AnimatePresence>
+                    {currentLines.map((line, index) => (
+                      <motion.div
+                        key={line.id}
+                        className={`${line.text === "" ? "h-3 sm:h-4" : ""} ${
+                          line.text.includes("💝")
+                            ? "text-center text-xl sm:text-2xl"
+                            : ""
+                        }`}
+                        initial={{
+                          opacity: 0,
+                          y: line.isNew ? 20 : -20,
+                          x: line.isNew ? -10 : 0,
+                        }}
+                        animate={{
+                          opacity: 1,
+                          y: 0,
+                          x: 0,
+                        }}
+                        exit={{
+                          opacity: 0,
+                          y: -20,
+                          height: 0,
+                          transition: { duration: 0.3 },
+                        }}
+                        transition={{
+                          duration: 0.6,
+                          ease: "easeOut",
+                        }}
+                        layout
+                      >
+                        {line.text === "" ? (
+                          <br />
+                        ) : (
+                          <span className="inline-block">{line.text}</span>
+                        )}
+                      </motion.div>
+                    ))}
+
+                    {/* Dòng đang được gõ */}
+                    {currentLineIndex < confessionContent.length && (
+                      <motion.div
+                        className={`text-blue-900 leading-7 sm:leading-8 ${fontSize}`}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                      >
+                        <span className="inline-block">
+                          {confessionContent[currentLineIndex].substring(
+                            0,
+                            currentCharIndex
+                          )}
+                          <motion.span
+                            className="ml-0.5 text-blue-600"
+                            animate={{ opacity: [1, 0, 1] }}
+                            transition={{ duration: 0.8, repeat: Infinity }}
+                          >
+                            ▊
+                          </motion.span>
+                        </span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {/* Chữ ký - chỉ hiển thị khi đến cuối */}
+                {!isTyping && currentLineIndex >= confessionContent.length && (
+                  <motion.div
+                    className="text-center mt-6 sm:mt-8"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.5 }}
+                  >
+                    <div className="inline-block text-right">
+                      <p className="text-blue-800 text-base sm:text-lg mb-1">
+                        Với tất cả sự chân thành,
+                      </p>
+                      <div className="w-32 sm:w-40 md:w-48 h-0.5 bg-blue-400 mb-2 opacity-60" />
+                      <p className="text-blue-900 text-xl sm:text-2xl font-bold tracking-wider">
+                        Một người bạn
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </div>
+
+              {/* Dấu mực trang trí */}
+              <motion.div
+                className="absolute bottom-4 right-4 sm:bottom-6 sm:right-6 w-8 h-8 sm:w-12 sm:h-12 text-blue-400/40"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 2, type: "spring" }}
+              >
+                💧
               </motion.div>
-              <h2 className="text-3xl md:text-4xl font-light text-transparent text-center bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text mb-4">
-                Cảm ơn chị đã đọc những dòng tâm sự này.
-                <br />
-                Em luôn ở đây chờ chị
-              </h2>
-            </motion.div>
+            </div>
+
+            {/* Nút đóng */}
+            {!isTyping && currentLineIndex >= confessionContent.length && (
+              <motion.button
+                onClick={() => onComplete?.("completed")}
+                className="mt-4 sm:mt-6 md:mt-8 mx-auto block bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 sm:px-8 sm:py-3 rounded-full font-handwriting text-base sm:text-lg transition-all shadow-lg"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                Gấp thư lại
+              </motion.button>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Thêm CSS cho font chữ viết tay */}
+      <style jsx>{`
+        .font-handwriting {
+          font-family: "Comic Sans MS", "Segoe UI", cursive, sans-serif;
+          font-weight: 500;
+        }
+      `}</style>
     </div>
   );
 };
