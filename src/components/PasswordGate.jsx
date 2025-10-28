@@ -61,7 +61,7 @@ const PasswordGate = ({ onSuccess }) => {
           <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
             Nhập mật khẩu
           </h2>
-          <p className="text-sm text-gray-600">Để xem lời nhắn đặc biệt 💌</p>
+          <p className="text-sm text-gray-600">Để xem lời chúc đặc biệt 💌</p>
         </div>
 
         {/* Password dots */}
