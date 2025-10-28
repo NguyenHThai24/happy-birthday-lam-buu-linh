@@ -103,7 +103,7 @@ const WordAnimation = ({
       fontWeight: "800",
       color: "#FF1493",
       userSelect: "none",
-      fontFamily: "'DM Sans', sans-serif",
+
       margin: "0 3px",
       textShadow: "3px 3px 6px rgba(0,0,0,0.15)",
       letterSpacing: "0.5px",
