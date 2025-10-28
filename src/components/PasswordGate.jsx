@@ -5,8 +5,18 @@ const PasswordGate = ({ onSuccess }) => {
   const [error, setError] = useState("");
   const [isShaking, setIsShaking] = useState(false);
 
+  const handleNumberClick = (number) => {
+    if (code.length < 4) {
+      setCode(code + number);
+    }
+  };
+
+  const handleDelete = () => {
+    setCode(code.slice(0, -1));
+  };
+
   const handleSubmit = () => {
-    if (code === "2708") {
+    if (code === "0111") {
       setError("");
       onSuccess();
     } else {
@@ -17,200 +27,136 @@ const PasswordGate = ({ onSuccess }) => {
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
-  };
-
   return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center z-50 bg-gradient-to-br from-pink-200 via-rose-100 to-pink-300 overflow-hidden">
-      {/* Animated floating hearts */}
-      {[...Array(20)].map((_, i) => (
-        <div
-          key={i}
-          className="absolute text-pink-400 opacity-20 animate-float"
-          style={{
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            animationDelay: `${Math.random() * 5}s`,
-            animationDuration: `${8 + Math.random() * 4}s`,
-            fontSize: `${20 + Math.random() * 30}px`,
-          }}
-        >
-          {["💕", "💖", "💗", "💝", "🌸", "🌺"][Math.floor(Math.random() * 6)]}
-        </div>
-      ))}
-
-      {/* Decorative blurred circles */}
-      <div className="absolute top-20 left-20 w-64 h-64 bg-pink-400/30 rounded-full blur-3xl animate-pulse"></div>
-      <div
-        className="absolute bottom-20 right-20 w-72 h-72 bg-rose-400/30 rounded-full blur-3xl animate-pulse"
-        style={{ animationDelay: "1s" }}
-      ></div>
-      <div
-        className="absolute top-1/2 left-1/4 w-48 h-48 bg-pink-300/20 rounded-full blur-2xl animate-pulse"
-        style={{ animationDelay: "2s" }}
-      ></div>
-      <div
-        className="absolute bottom-1/3 right-1/3 w-56 h-56 bg-rose-300/20 rounded-full blur-2xl animate-pulse"
-        style={{ animationDelay: "1.5s" }}
-      ></div>
-
-      <div
-        className={`relative bg-white/90 backdrop-blur-lg p-12 rounded-[2rem] shadow-2xl text-center max-w-md w-full mx-4 border-4 border-pink-300/50 ${
-          isShaking ? "animate-shake" : ""
-        }`}
-        style={{
-          animation: isShaking ? "shake 0.5s" : "none",
-          boxShadow:
-            "0 25px 50px -12px rgba(236, 72, 153, 0.25), 0 0 0 1px rgba(236, 72, 153, 0.1)",
-        }}
-      >
-        {/* Sparkles decoration */}
-        <div className="absolute -top-4 -left-4 text-4xl animate-bounce">
-          ✨
-        </div>
-        <div
-          className="absolute -top-4 -right-4 text-4xl animate-bounce"
-          style={{ animationDelay: "0.5s" }}
-        >
-          ✨
-        </div>
-
-        {/* Lock icon with gradient */}
-        <div className="mb-8 relative">
-          <div className="w-24 h-24 mx-auto bg-gradient-to-br from-pink-400 via-rose-400 to-pink-500 rounded-full flex items-center justify-center shadow-xl">
-            <svg
-              className="w-12 h-12 text-white"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-              />
-            </svg>
+    <div className="absolute inset-0 flex items-center justify-center z-50 bg-gradient-to-br from-pink-200 via-pink-100 to-rose-200 p-4 sm:p-6">
+      {/* Subtle background decorations */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {[...Array(8)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute text-pink-300/30"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              fontSize: `${1.5 + Math.random() * 1}rem`,
+            }}
+          >
+            ❤️
           </div>
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-28 h-28 bg-pink-400/30 rounded-full blur-xl animate-pulse"></div>
-        </div>
+        ))}
+      </div>
 
-        <h2 className="text-4xl font-bold mb-3 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 bg-clip-text text-transparent">
-          Mở Khóa Bất Ngờ
-        </h2>
-        {/* <p className="text-gray-600 mb-8 text-base font-medium">
-          Nhập ngày tháng sinh nhật của chị nhé 🎂
-        </p> */}
-
-        {/* Input container */}
-        <div className="relative mb-8">
-          <input
-            type="password"
-            value={code}
-            onChange={(e) => setCode(e.target.value)}
-            onKeyPress={handleKeyPress}
-            maxLength={4}
-            className="w-full px-6 py-5 text-gray-800 rounded-2xl text-center text-3xl tracking-[1.2em] font-bold border-4 border-pink-300 focus:border-pink-500 focus:outline-none focus:ring-6 focus:ring-pink-200/60 transition-all bg-gradient-to-br from-pink-50 via-white to-rose-50 shadow-lg"
-            placeholder="••••"
-            autoFocus
-          />
-          <div className="absolute right-5 top-1/2 -translate-y-1/2 flex gap-1">
-            <div className="w-2 h-2 bg-pink-400 rounded-full animate-ping"></div>
-            <div
-              className="w-2 h-2 bg-rose-400 rounded-full animate-ping"
-              style={{ animationDelay: "0.2s" }}
-            ></div>
-            <div
-              className="w-2 h-2 bg-pink-500 rounded-full animate-ping"
-              style={{ animationDelay: "0.4s" }}
-            ></div>
+      {/* Main content card */}
+      <div className="relative w-full max-w-sm bg-white/90 backdrop-blur-sm rounded-3xl shadow-lg p-6 sm:p-8">
+        {/* Lock icon */}
+        <div className="flex justify-center mb-5">
+          <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-pink-400 to-rose-400 rounded-2xl flex items-center justify-center shadow-md">
+            <span className="text-2xl sm:text-3xl">🔒</span>
           </div>
         </div>
 
-        <button
-          onClick={handleSubmit}
-          className="w-full px-8 py-5 bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 hover:from-pink-600 hover:via-rose-600 hover:to-pink-700 text-white rounded-2xl text-xl font-bold shadow-2xl hover:shadow-pink-500/50 transform hover:scale-105 transition-all duration-300 active:scale-95"
-        >
-          <span className="flex items-center justify-center gap-3">
-            Xác nhận
-            <svg
-              className="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2.5}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </span>
-        </button>
+        {/* Title */}
+        <div className="text-center mb-6">
+          <h2 className="text-xl sm:text-2xl font-semibold text-gray-800 mb-1">
+            Nhập mật khẩu
+          </h2>
+          <p className="text-sm text-gray-600">Để xem lời nhắn đặc biệt 💌</p>
+        </div>
 
+        {/* Password dots */}
+        <div className="mb-6">
+          <div
+            className={`bg-pink-50 rounded-2xl p-5 ${
+              isShaking ? "animate-shake" : ""
+            }`}
+          >
+            <div className="flex justify-center gap-3">
+              {[0, 1, 2, 3].map((index) => (
+                <div
+                  key={index}
+                  className={`w-11 h-11 sm:w-12 sm:h-12 rounded-xl border-2 flex items-center justify-center transition-all duration-300 ${
+                    code.length > index
+                      ? "bg-gradient-to-br from-pink-400 to-rose-400 border-pink-400 scale-105"
+                      : "bg-white border-pink-200"
+                  }`}
+                >
+                  {code.length > index && (
+                    <span className="text-lg sm:text-xl">💖</span>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Number pad - Compact */}
+        <div className="mb-5">
+          <div className="grid grid-cols-3 gap-2">
+            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((number) => (
+              <button
+                key={number}
+                onClick={() => handleNumberClick(number.toString())}
+                className="h-12 sm:h-14 rounded-xl bg-pink-50 hover:bg-pink-100 active:bg-pink-200 border border-pink-200 text-gray-800 text-lg sm:text-xl font-medium transition-all duration-150 hover:shadow-sm active:scale-95"
+              >
+                {number}
+              </button>
+            ))}
+            <button
+              onClick={handleDelete}
+              className="h-12 sm:h-14 rounded-xl bg-rose-400 hover:bg-rose-500 active:bg-rose-600 text-white text-sm font-medium transition-all duration-150 hover:shadow-sm active:scale-95"
+            >
+              Xóa
+            </button>
+            <button
+              onClick={() => handleNumberClick("0")}
+              className="h-12 sm:h-14 rounded-xl bg-pink-50 hover:bg-pink-100 active:bg-pink-200 border border-pink-200 text-gray-800 text-lg sm:text-xl font-medium transition-all duration-150 hover:shadow-sm active:scale-95"
+            >
+              0
+            </button>
+            <button
+              onClick={handleSubmit}
+              className="h-12 sm:h-14 rounded-xl bg-pink-500 hover:bg-pink-600 active:bg-pink-700 text-white text-sm font-medium transition-all duration-150 hover:shadow-sm active:scale-95"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+
+        {/* Hint */}
+        <div className="text-center mb-4">
+          <div className="inline-flex items-center gap-2 bg-pink-50 px-4 py-2 rounded-full border border-pink-100">
+            <span className="text-sm">💡</span>
+            <p className="text-xs sm:text-sm text-pink-800">Gợi ý: "DDMM"</p>
+          </div>
+        </div>
+
+        {/* Error message */}
         {error && (
-          <div className="mt-6 p-4 bg-red-50 border-3 border-red-300 rounded-2xl animate-bounce shadow-lg">
-            <p className="text-red-600 font-bold text-base flex items-center justify-center gap-2">
-              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                  clipRule="evenodd"
-                />
-              </svg>
+          <div className="bg-rose-50 border border-rose-200 rounded-xl p-3 animate-shake">
+            <p className="text-xs sm:text-sm text-rose-600 text-center font-medium">
               {error}
             </p>
           </div>
         )}
-
-        {/* Hint with heart icon */}
-        {/* <div className="mt-8 flex items-center justify-center gap-2">
-          <span className="text-pink-400">💝</span>
-          <p className="text-sm text-gray-500 italic font-medium">
-            Gợi ý: 4 chữ số (DDMM)
-          </p>
-          <span className="text-pink-400">💝</span>
-        </div> */}
-
-        {/* Bottom sparkles */}
-        <div
-          className="absolute -bottom-4 left-1/4 text-3xl animate-bounce"
-          style={{ animationDelay: "0.3s" }}
-        >
-          🌸
-        </div>
-        <div
-          className="absolute -bottom-4 right-1/4 text-3xl animate-bounce"
-          style={{ animationDelay: "0.7s" }}
-        >
-          🌸
-        </div>
       </div>
 
-      <style>{`
+      <style jsx>{`
         @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); }
-          20%, 40%, 60%, 80% { transform: translateX(10px); }
-        }
-        
-        @keyframes float {
-          0%, 100% { 
-            transform: translateY(0) rotate(0deg);
-            opacity: 0.1;
+          0%,
+          100% {
+            transform: translateX(0);
           }
-          50% { 
-            transform: translateY(-20px) rotate(180deg);
-            opacity: 0.3;
+          25% {
+            transform: translateX(-10px);
+          }
+          75% {
+            transform: translateX(10px);
           }
         }
-        
-        .animate-float {
-          animation: float 8s ease-in-out infinite;
+
+        .animate-shake {
+          animation: shake 0.4s ease-in-out;
         }
       `}</style>
     </div>

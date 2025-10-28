@@ -2,6 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ConfessionStage = ({ onComplete }) => {
+  const [isUnlocked, setIsUnlocked] = useState(false);
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [stage, setStage] = useState(0);
   const [progress, setProgress] = useState(0);
 
@@ -56,8 +59,8 @@ const ConfessionStage = ({ onComplete }) => {
       { text: "Kể từ ngày 27/08 ấy", duration: 3500 },
       { text: "Mọi thứ với em đều trở nên ý nghĩa", duration: 4000 },
       { text: "Em thích cách chị cười", duration: 3500 },
-      { text: "Thích cách chị nói chuyện", duration: 3500 },
-      { text: "Thích tất cả những gì về chị", duration: 4000 },
+      { text: "Em thích cách chị nói chuyện", duration: 3500 },
+      { text: "Em thích tất cả những gì về chị", duration: 4000 },
       { text: "Mỗi ngày trôi qua", duration: 3500 },
       { text: "Kể từ ngày đầu tiên 27/08", duration: 3500 },
       { text: "Em lại càng thêm yêu quý chị", duration: 4000 },
@@ -138,6 +141,19 @@ const ConfessionStage = ({ onComplete }) => {
     []
   );
 
+  // Heart explosion elements
+  const heartExplosionElements = useMemo(
+    () =>
+      Array.from({ length: 35 }, (_, i) => ({
+        id: i,
+        x: (Math.random() - 0.5) * 600,
+        y: (Math.random() - 0.5) * 600,
+        rotate: Math.random() * 360,
+        type: ["💕", "💖", "💗", "💝", "✨"][Math.floor(Math.random() * 5)],
+      })),
+    []
+  );
+
   // Memoized progress calculation
   const totalSteps = confessionSteps.length;
   const progressPercent = useMemo(
@@ -145,8 +161,34 @@ const ConfessionStage = ({ onComplete }) => {
     [stage, totalSteps]
   );
 
+  // Password handlers
+  const handlePasswordSubmit = (e) => {
+    e.preventDefault();
+    if (password === "2708") {
+      setIsUnlocked(true);
+      setError("");
+    } else {
+      setError("Mật khẩu không đúng 💔");
+      setPassword("");
+    }
+  };
+
+  const handleNumberClick = (num) => {
+    if (password.length < 4) {
+      setPassword(password + num);
+      setError("");
+    }
+  };
+
+  const handleDelete = () => {
+    setPassword(password.slice(0, -1));
+    setError("");
+  };
+
   // Optimized useEffect with cleanup
   useEffect(() => {
+    if (!isUnlocked) return;
+
     if (stage < confessionSteps.length) {
       const currentStep = confessionSteps[stage];
       let progressInterval;
@@ -168,30 +210,146 @@ const ConfessionStage = ({ onComplete }) => {
         clearInterval(progressInterval);
       };
     } else if (stage === confessionSteps.length) {
-      // Tự động chuyển sang màn hình kết thúc sau 2 giây
       const timer = setTimeout(() => {
         onComplete?.("completed");
       }, 15000);
       return () => clearTimeout(timer);
     }
-  }, [stage, confessionSteps, onComplete]);
+  }, [stage, confessionSteps, onComplete, isUnlocked]);
 
-  // Heart explosion elements
-  const heartExplosionElements = useMemo(
-    () =>
-      Array.from({ length: 35 }, (_, i) => ({
-        id: i,
-        x: (Math.random() - 0.5) * 600,
-        y: (Math.random() - 0.5) * 600,
-        rotate: Math.random() * 360,
-        type: ["💕", "💖", "💗", "💝", "✨"][Math.floor(Math.random() * 5)],
-      })),
-    []
-  );
+  // Password screen
+  if (!isUnlocked) {
+    return (
+      <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-rose-100 to-pink-200 overflow-hidden flex items-center justify-center">
+        {/* Background hearts */}
+        <div className="absolute inset-0">
+          {backgroundHearts.slice(0, 8).map((heart) => (
+            <motion.div
+              key={`heart-${heart.id}`}
+              className="absolute text-pink-400/30 pointer-events-none"
+              style={{
+                left: `${heart.left}%`,
+                top: `${heart.top}%`,
+                fontSize: `${heart.fontSize}px`,
+              }}
+              animate={{
+                y: [0, -80, 0],
+                opacity: [0.1, 0.4, 0.1],
+              }}
+              transition={{
+                duration: heart.duration,
+                repeat: Infinity,
+                delay: heart.delay,
+                ease: "easeInOut",
+              }}
+            >
+              💕
+            </motion.div>
+          ))}
+        </div>
 
+        <motion.div
+          className="relative z-10 bg-white/95 backdrop-blur-xl rounded-3xl border-2 border-pink-200 p-8 md:p-12 shadow-2xl max-w-md w-full mx-4"
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.div
+            className="text-6xl text-center mb-6"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            🔐
+          </motion.div>
+
+          <h2 className="text-2xl md:text-3xl font-light text-transparent bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-center mb-2">
+            Nhập mật khẩu
+          </h2>
+          <p className="text-pink-500 text-center mb-8 text-sm">
+            Để xem lời nhắn đặc biệt 💖
+          </p>
+
+          <form onSubmit={handlePasswordSubmit} className="space-y-6">
+            {/* Password display */}
+            <div className="flex justify-center gap-3 mb-8">
+              {[0, 1, 2, 3].map((i) => (
+                <motion.div
+                  key={i}
+                  className="w-14 h-14 rounded-2xl border-2 border-pink-300 bg-pink-50 flex items-center justify-center text-2xl font-medium text-pink-600"
+                  animate={password.length === i ? { scale: [1, 1.1, 1] } : {}}
+                  transition={{ duration: 0.3 }}
+                >
+                  {password[i] ? "•" : ""}
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Error message */}
+            <AnimatePresence>
+              {error && (
+                <motion.p
+                  className="text-red-500 text-center text-sm"
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                >
+                  {error}
+                </motion.p>
+              )}
+            </AnimatePresence>
+
+            {/* Number pad */}
+            <div className="grid grid-cols-3 gap-3">
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
+                <motion.button
+                  key={num}
+                  type="button"
+                  onClick={() => handleNumberClick(num.toString())}
+                  className="h-14 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 hover:from-pink-200 hover:to-rose-200 text-pink-700 font-medium text-xl transition-all shadow-sm"
+                  whileTap={{ scale: 0.95 }}
+                >
+                  {num}
+                </motion.button>
+              ))}
+              <motion.button
+                type="button"
+                onClick={handleDelete}
+                className="h-14 rounded-xl bg-gradient-to-br from-gray-100 to-gray-200 hover:from-gray-200 hover:to-gray-300 text-gray-700 font-medium text-sm transition-all shadow-sm"
+                whileTap={{ scale: 0.95 }}
+              >
+                Xóa
+              </motion.button>
+              <motion.button
+                type="button"
+                onClick={() => handleNumberClick("0")}
+                className="h-14 rounded-xl bg-gradient-to-br from-pink-100 to-rose-100 hover:from-pink-200 hover:to-rose-200 text-pink-700 font-medium text-xl transition-all shadow-sm"
+                whileTap={{ scale: 0.95 }}
+              >
+                0
+              </motion.button>
+              <motion.button
+                type="submit"
+                disabled={password.length !== 4}
+                className="h-14 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-medium text-sm transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                whileTap={{ scale: password.length === 4 ? 0.95 : 1 }}
+              >
+                OK
+              </motion.button>
+            </div>
+          </form>
+
+          <p className="text-pink-400 text-center mt-6 text-xs">
+            Gợi ý: Ngày đầu tiên chúng ta nói chuyện 💕
+          </p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  // Main confession content
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-pink-100 via-rose-100 to-pink-200 overflow-hidden">
-      {/* Optimized Floating hearts background - Slower and smoother */}
+      {/* Optimized Floating hearts background */}
       <div className="absolute inset-0">
         {backgroundHearts.map((heart) => (
           <motion.div
@@ -220,7 +378,7 @@ const ConfessionStage = ({ onComplete }) => {
         ))}
       </div>
 
-      {/* Optimized Floating bubbles - Slower and smoother */}
+      {/* Optimized Floating bubbles */}
       <div className="absolute inset-0">
         {backgroundBubbles.map((bubble) => (
           <motion.div
@@ -259,21 +417,6 @@ const ConfessionStage = ({ onComplete }) => {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.8 }}
           >
-            {/* Progress indicator */}
-            {/* <div className="fixed top-0 left-0 right-0 z-50">
-              <div className="h-1 bg-pink-200">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progressPercent}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
-              <div className="text-center py-2 text-pink-600 text-sm font-medium bg-white/50 backdrop-blur-sm">
-                {stage + 1} / {totalSteps}
-              </div>
-            </div> */}
-
             {/* Optimized Animated hearts around card */}
             {cardHearts.map((heart) => (
               <motion.div
@@ -369,17 +512,6 @@ const ConfessionStage = ({ onComplete }) => {
                 <span className="animate-pulse">💗</span>
               </motion.p>
             </motion.div>
-
-            {/* Skip button */}
-            {/* <motion.button
-              className="fixed bottom-8 right-8 text-pink-500 hover:text-pink-700 text-sm font-medium bg-white/80 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg transition-colors z-50"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1.5 }}
-              onClick={() => setStage(confessionSteps.length)}
-            >
-              Bỏ qua →
-            </motion.button> */}
           </motion.div>
         )}
 
