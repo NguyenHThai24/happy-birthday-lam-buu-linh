@@ -21,7 +21,7 @@ const ConfessionStage = ({ onComplete }) => {
     () => [
       "Gửi chị...",
       "Có vài điều em muốn gửi đến chị.",
-      "Từ ngày 27/08 - ngày đầu tiên chúng ta trò chuyện,",
+      "Từ ngày 26/08 - ngày đầu tiên chúng ta trò chuyện,",
       "em đã nhận ra chị là một người rất đặc biệt.",
       "Mỗi lần được nói chuyện cùng chị,",
       "mỗi lần chơi cầu lông cùng nhau,",
@@ -123,7 +123,7 @@ const ConfessionStage = ({ onComplete }) => {
   // Password handlers
   const handlePasswordSubmit = (e) => {
     e.preventDefault();
-    if (password === "2708") {
+    if (password === "2608") {
       setIsUnlocked(true);
       setError("");
       setTimeout(() => setShowLetter(true), 1000);
