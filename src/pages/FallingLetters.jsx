@@ -112,6 +112,79 @@ const FallingLetters = ({ onStartMusic }) => {
           letters={"MỌI ĐIỀU ĐỀU THUẬN LỢI".split("")}
           y={centerY}
           stayTime={3500}
+          onComplete={() => setStage("wish6")}
+        />
+      )}
+
+      {/* Thêm các lời chúc mới */}
+      {stage === "wish6" && (
+        <WordAnimation
+          letters={"GẶP NHIỀU MAY MẮN".split("")}
+          y={centerY}
+          stayTime={3500}
+          onComplete={() => setStage("wish7")}
+        />
+      )}
+
+      {stage === "wish7" && (
+        <WordAnimation
+          letters={"HẠNH PHÚC TRÀN ĐẦY".split("")}
+          y={centerY}
+          stayTime={3500}
+          onComplete={() => setStage("wish8")}
+        />
+      )}
+
+      {stage === "wish8" && (
+        <WordAnimation
+          letters={"THỰC HIỆN ĐƯỢC ƯỚC MƠ".split("")}
+          y={centerY}
+          stayTime={3500}
+          onComplete={() => setStage("wish9")}
+        />
+      )}
+
+      {stage === "wish9" && (
+        <WordAnimation
+          letters={"LUÔN TỎA SÁNG".split("")}
+          y={centerY}
+          stayTime={3500}
+          onComplete={() => setStage("wish11")}
+        />
+      )}
+
+      {stage === "wish11" && (
+        <WordAnimation
+          letters={"BÌNH AN MỖI NGÀY".split("")}
+          y={centerY}
+          stayTime={3500}
+          onComplete={() => setStage("wish12")}
+        />
+      )}
+
+      {stage === "wish12" && (
+        <WordAnimation
+          letters={"THÀNH CÔNG VƯỢT BẬC".split("")}
+          y={centerY}
+          stayTime={3500}
+          onComplete={() => setStage("wish13")}
+        />
+      )}
+
+      {stage === "wish13" && (
+        <WordAnimation
+          letters={"LUÔN MẠNH MẼ".split("")}
+          y={centerY}
+          stayTime={3500}
+          onComplete={() => setStage("wish14")}
+        />
+      )}
+
+      {stage === "wish14" && (
+        <WordAnimation
+          letters={"TỰ TIN TỎA SÁNG".split("")}
+          y={centerY}
+          stayTime={3500}
           onComplete={() => setStage("love")}
         />
       )}
