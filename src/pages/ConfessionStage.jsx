@@ -111,7 +111,7 @@ const ConfessionStage = ({ onComplete }) => {
     if (windowSize.height < 700) return 450;
     if (windowSize.height < 800) return 500;
     if (windowSize.height < 900) return 550;
-    return 600;
+    return 700;
   }, [windowSize.height]);
 
   // Tính toán kích thước chữ dựa trên kích thước màn hình

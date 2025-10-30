@@ -31,34 +31,6 @@ const FallingLetters = ({ onStartMusic }) => {
         <Firework onComplete={() => setStage("birthday")} />
       )}
 
-      {/* Intro - Mở đầu ấm áp */}
-      {/* {stage === "intro" && (
-        <WordAnimation
-          letters={"NGÀY ĐẶC BIỆT".split("")}
-          y={centerY}
-          stayTime={3000}
-          onComplete={() => setStage("intro2")}
-        />
-      )}
-
-      {stage === "intro2" && (
-        <WordAnimation
-          letters={"CỦA MỘT NGƯỜI".split("")}
-          y={centerY}
-          stayTime={3500}
-          onComplete={() => setStage("intro3")}
-        />
-      )}
-
-      {stage === "intro3" && (
-        <WordAnimation
-          letters={"RẤT QUAN TRỌNG".split("")}
-          y={centerY}
-          stayTime={3500}
-          onComplete={() => setStage("birthday")}
-        />
-      )} */}
-
       {/* Birthday wish */}
       {stage === "birthday" && (
         <WordAnimation
