@@ -82,7 +82,7 @@ const PasswordGate = ({ onSuccess }) => {
                   }`}
                 >
                   {code.length > index && (
-                    <span className="text-lg sm:text-xl">💖</span>
+                    <span className="text-lg sm:text-xl">🎂</span>
                   )}
                 </div>
               ))}

@@ -99,7 +99,7 @@ const WordAnimation = ({
       // fontSize: `clamp(20px, ${
       //   Math.min(screenWidth, screenHeight) * 0.1
       // }px, 60px)`,
-      fontSize: "1.5rem",
+      fontSize: "clamp(1.2rem, 3vw, 7rem)",
       fontWeight: "800",
       color: "#FF1493",
       userSelect: "none",

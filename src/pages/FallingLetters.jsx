@@ -28,11 +28,11 @@ const FallingLetters = ({ onStartMusic }) => {
       )}
 
       {stage === "firework" && (
-        <Firework onComplete={() => setStage("intro")} />
+        <Firework onComplete={() => setStage("birthday")} />
       )}
 
       {/* Intro - Mở đầu ấm áp */}
-      {stage === "intro" && (
+      {/* {stage === "intro" && (
         <WordAnimation
           letters={"NGÀY ĐẶC BIỆT".split("")}
           y={centerY}
@@ -57,7 +57,7 @@ const FallingLetters = ({ onStartMusic }) => {
           stayTime={3500}
           onComplete={() => setStage("birthday")}
         />
-      )}
+      )} */}
 
       {/* Birthday wish */}
       {stage === "birthday" && (
