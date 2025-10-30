@@ -140,15 +140,6 @@ const FallingLetters = ({ onStartMusic }) => {
           letters={"THỰC HIỆN ĐƯỢC ƯỚC MƠ".split("")}
           y={centerY}
           stayTime={3500}
-          onComplete={() => setStage("wish9")}
-        />
-      )}
-
-      {stage === "wish9" && (
-        <WordAnimation
-          letters={"LUÔN TỎA SÁNG".split("")}
-          y={centerY}
-          stayTime={3500}
           onComplete={() => setStage("wish11")}
         />
       )}
@@ -158,16 +149,7 @@ const FallingLetters = ({ onStartMusic }) => {
           letters={"BÌNH AN MỖI NGÀY".split("")}
           y={centerY}
           stayTime={3500}
-          onComplete={() => setStage("wish12")}
-        />
-      )}
-
-      {stage === "wish12" && (
-        <WordAnimation
-          letters={"THÀNH CÔNG VƯỢT BẬC".split("")}
-          y={centerY}
-          stayTime={3500}
-          onComplete={() => setStage("wish13")}
+          onComplete={() => setStage("wish14")}
         />
       )}
 
