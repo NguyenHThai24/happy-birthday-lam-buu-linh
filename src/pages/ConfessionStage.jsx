@@ -116,7 +116,7 @@ const ConfessionStage = ({ onComplete }) => {
 
   // Tính toán kích thước chữ dựa trên kích thước màn hình
   const fontSize = useMemo(() => {
-    if (windowSize.width < 640) return "text-[1rem]"; // mobile
+    if (windowSize.width < 640) return "text-[1.2rem]"; // mobile
     if (windowSize.width < 768) return "text-[1.2rem]"; // tablet
     return "text-xl"; // desktop
   }, [windowSize.width]);
